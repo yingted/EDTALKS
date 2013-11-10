@@ -93,7 +93,7 @@ public final class CampusNavigator{
 			type=_type;
 		}
 		@Override public String toString(){
-			StringBuilder instruction = new StringBuilder();
+			StringBuilder instruction = new StringBuilder("     ");
 
 			if("upstairs".equals(type)||"downstairs".equals(type)){ // same building
 				instruction.append("Go "+type);

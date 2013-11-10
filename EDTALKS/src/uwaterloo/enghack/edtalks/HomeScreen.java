@@ -10,6 +10,7 @@ import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.Spannable;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,10 @@ import uwaterloo.enghack.edtalks.CampusNavigator.Direction;
 import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import uwaterloo.enghack.edtalks.R;
 import uwaterloo.enghack.edtalks.CampusNavigator.Building;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.graphics.Color;
+
 
 public class HomeScreen extends Activity implements OnItemSelectedListener {
 
@@ -87,10 +92,19 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 				Floor from=(Floor)fromFloorSpinner.getSelectedItem(),to=(Floor)toFloorSpinner.getSelectedItem();
 				final List<Direction>path=CampusNavigator.getPath(from,to);
 				if(path==null){
-					directionsList.setAdapter(new ArrayAdapter<CharSequence>(HomeScreen.this,android.R.layout.simple_list_item_1,new String[]{"sorry!"}));
+					Spannable sp=Spannable.Factory.getInstance().newSpannable("sorry!");
+					sp.setSpan(new ForegroundColorSpan(Color.RED), 0,sp.length(),0);
+					directionsList.setAdapter(new ArrayAdapter<CharSequence>(HomeScreen.this,android.R.layout.simple_list_item_1,new Spannable[]{sp}));
 					return;
 				}
-				directionsList.setAdapter(new ArrayAdapter<Direction>(HomeScreen.this,android.R.layout.simple_list_item_1,path));
+				final Spannable[]sp=new Spannable[path.size()];
+				for(int i=0;i<path.size();++i){
+					final Direction d=path.get(i);
+					final Spannable s=Spannable.Factory.getInstance().newSpannable(d.toString());
+					s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),d.toString().indexOf(" to ")+4,d.toString().length(),0);
+					sp[i]=s;
+				}
+				directionsList.setAdapter(new ArrayAdapter<Spannable>(HomeScreen.this,android.R.layout.simple_list_item_1,sp));
 			}
 
 			@Override public void onNothingSelected(AdapterView<?> arg0){}
