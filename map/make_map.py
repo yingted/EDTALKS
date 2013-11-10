@@ -46,9 +46,10 @@ for x in sorted(listdir(argv[1])):
 				dst=pt['name'].upper()
 				(tunnels if dst.startswith('/')else joints)[joint.bldg][dst.lstrip('/')].append(joint)
 			links.extend(Link(a,b,dist(a,b))for a,b in combinations(floor,2))
-			links.append(Link(joint,ctr,dist(joint,ctr)))
 with open('tunnel_lengths.json')as f:
 	tunnel_lengths={sortargs(a.upper(),b.upper()):d for a,b,d in load(f)}
+with open('building_names.json')as f:
+	short_names,long_names=zip(*load(f))
 for a in places.iterkeys():
 	for b in places.iterkeys():
 		for c in joints,tunnels:
@@ -76,6 +77,8 @@ with open('gen/Campus.java','w')as f:
 		public static String[]b_floor=%s;
 		public static String[]b_vertex=%s;
 		public static float[]weight=%s;
+		public static String[]shortNames=%s;
+		public static String[]longNames=%s;
 	}
 	'''%tuple(str(x).replace("'",'"').replace('[','{').replace(']','}').replace(' ','')for x in(
 		places.keys(),
@@ -87,7 +90,9 @@ with open('gen/Campus.java','w')as f:
 		[link.b.bldg for link in links],
 		[link.b.floor for link in links],
 		[link.a.name for link in links],
-		[link.d for link in links],
+		'[%s]'%','.join('%ff'%link.d for link in links),
+		short_names,
+		long_names,
 	)))
 from lxml.builder import E
 flattened_places={bldg:[subfloor.name[len(bldg)+1:]for(floor,subfloors)in sorted(bldg_floors.iteritems(),key=item_key)for subfloor in subfloors]for bldg,bldg_floors in places.iteritems()}
@@ -97,7 +102,7 @@ xml=E.venues(
 		id='1',
 		*[
 			E.building(
-				E.name(bldg),
+				E.name(long_names[short_names.index(bldg)]),
 				E.shortname(bldg),
 				id=str(i+1),
 				*[
