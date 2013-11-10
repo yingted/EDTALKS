@@ -103,7 +103,7 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 	        @Override
 	        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 	            Object o = directionsList.getItemAtPosition(position);
-	            String str=o.toString().toLowerCase().replace("/", "_");//As you are using Default String Adapter
+            	String str=o instanceof Direction?((Direction)o).b.toString().toLowerCase().replace("/", "_"):"sorry!";//As you are using Default String Adapter
 	            Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
 	            intent.putExtra("picName", str);
 	            HomeScreen.this.startActivity(intent);

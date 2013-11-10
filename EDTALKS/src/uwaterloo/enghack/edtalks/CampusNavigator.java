@@ -103,7 +103,7 @@ public final class CampusNavigator{
 					instruction.append("Take the tunnel");
 				else instruction.append("Walk");
 			}
-			instruction.append(" to " + b);
+			instruction.append(" to " + b.getShortName() + " floor "+ b.getFloor());
 			return instruction.toString();
 		}
 	}
