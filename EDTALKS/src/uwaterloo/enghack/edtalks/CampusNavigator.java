@@ -93,8 +93,31 @@ public final class CampusNavigator{
 			type=_type;
 		}
 		@Override public String toString(){
-			return"go "+type+" from "+a+" to "+b;
+			StringBuilder instruction = new StringBuilder();
+
+			if(a.getShortName().equals(b.getShortName())){ // same building
+				instruction.append("Go ");
+				int floor_a = getFloorNumber(a);
+				int floor_b = getFloorNumber(b);
+				if(floor_b > floor_a)
+					instruction.append("up ");
+				else instruction.append("down ");
+				instruction.append(floor_b - floor_a);
+				instruction.append(" floors");
+			}
+			else { // different buildings
+				if(type.equals("tunnel"))
+					instruction.append("Take the tunnel ");
+				else instruction.append("Walk ");
+				instruction.append("to " + b.getShortName());
+			}
+			return instruction.toString();
 		}
+	public static int getFloorNumber(Floor f){
+	}
+		if(f.getFloor().equals("B1"))
+			return 0;
+		else return (int)Double.valueOf(f.getFloor());
 	}
 	public static class Building extends ArrayList<Floor>{
 		private static final long serialVersionUID=-4240221880279433922L;
