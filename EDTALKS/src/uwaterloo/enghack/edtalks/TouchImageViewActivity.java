@@ -20,7 +20,7 @@ public class TouchImageViewActivity extends Activity {
                 
         TouchImageView img = (TouchImageView) findViewById(R.id.touchImageView);
         int resID;
-        if (picName.equalsIgnoreCase("Sorry!") == false)
+        if (picName.equalsIgnoreCase("Sorry, path not found!") == false)
         	resID = getResources().getIdentifier(picName , "drawable", getPackageName());
         else
         	resID = R.drawable.lotr;

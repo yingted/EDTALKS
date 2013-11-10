@@ -80,8 +80,11 @@ public final class CampusNavigator{
 		public String getFloor(){
 			return floor[id];
 		}
-		public String toString(){
+		public String getName(){
 			return getShortName()+"/"+getFloor();
+		}
+		public String toString(){
+			return getFloor();
 		}
 	}
 	public static class Direction{
@@ -173,7 +176,7 @@ public final class CampusNavigator{
 		}
 		if(Float.isInfinite(dist[end.id]))
 			return null;
-		String lastPos=end.toString();
+		String lastPos=end.getName();
 		String lastType="direct";
 		for(int i=end.id;i!=start.id;i=prev[i]){
 			final int u=prev[i],v=i;

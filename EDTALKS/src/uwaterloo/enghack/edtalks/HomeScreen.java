@@ -93,7 +93,7 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 				Floor from=(Floor)fromFloorSpinner.getSelectedItem(),to=(Floor)toFloorSpinner.getSelectedItem();
 				final List<Direction>path=CampusNavigator.getPath(from,to);
 				if(path==null){
-					Spannable sp=Spannable.Factory.getInstance().newSpannable("sorry!");
+					Spannable sp=Spannable.Factory.getInstance().newSpannable("Sorry, path not found!");
 					sp.setSpan(new ForegroundColorSpan(Color.RED), 0,sp.length(),0);
 					directionsList.setAdapter(new ArrayAdapter<CharSequence>(HomeScreen.this,android.R.layout.simple_list_item_1,new Spannable[]{sp}));
 					return;
@@ -118,7 +118,7 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 	        @Override
 	        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 	            String o = directionsList.getItemAtPosition(position).toString();
-            	String str=o.contains(" to ")?o.substring(o.indexOf(" to ")+4).replace(" floor ", "_").toLowerCase():"sorry!";//As you are using Default String Adapter
+            	String str=o.contains(" to ")?o.substring(o.indexOf(" to ")+4).replace(" floor ", "_").toLowerCase():"Sorry, path not found!";//As you are using Default String Adapter
 	            Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
 	            intent.putExtra("picName", str);
 	            HomeScreen.this.startActivity(intent);
@@ -127,8 +127,8 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		
 		viewFromButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	Object o = fromFloorSpinner.getSelectedItem();
-	            String str=o.toString().toLowerCase().replace("/", "_");
+            	Floor o = (Floor)fromFloorSpinner.getSelectedItem();
+	            String str=o.getName().toLowerCase().replace("/", "_");
             	Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
 	            intent.putExtra("picName", str);
 	            HomeScreen.this.startActivity(intent);
@@ -137,8 +137,8 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		
 		viewToButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	Object o = toFloorSpinner.getSelectedItem();
-	            String str=o.toString().toLowerCase().replace("/", "_");
+            	Floor o = (Floor)toFloorSpinner.getSelectedItem();
+	            String str=o.getName().toLowerCase().replace("/", "_");
             	Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
 	            intent.putExtra("picName", str);
 	            HomeScreen.this.startActivity(intent);
