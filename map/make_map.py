@@ -52,19 +52,18 @@ with open('building_names.json')as f:
 	short_names,long_names=zip(*load(f))
 	short_names=map(str,short_names)
 	long_names=map(str,long_names)
-for a in places.iterkeys():
-	for b in places.iterkeys():
-		for c in joints,tunnels:
-			ab=c[a][b]
-			ba=c[b][a]
-			if len(ab)!=len(ba):
-				if len(ab)+len(ba)==1:
-					ab[:]=[]
-					ba[:]=[]
-					continue
-				print'tunnel'if c is tunnels else 'joint ',a,b,[x.floor for x in ab],[x.floor for x in ba]#should not happen
-				assert False
-			links.extend([Link(u,v,0 if c is joints else tunnel_lengths[sortargs(u.bldg,v.bldg)])for u,v in zip(sorted(ab,key=key),sorted(ba,key=key))])
+for a,b in combinations(places.iterkeys(),2):
+	for c in joints,tunnels:
+		ab=c[a][b]
+		ba=c[b][a]
+		if len(ab)!=len(ba):
+			if len(ab)+len(ba)==1:
+				ab[:]=[]
+				ba[:]=[]
+				continue
+			print'tunnel'if c is tunnels else 'joint ',a,b,[x.floor for x in ab],[x.floor for x in ba]#should not happen
+			assert False
+		links.extend([Link(u,v,0 if c is joints else tunnel_lengths[sortargs(u.bldg,v.bldg)])for u,v in zip(sorted(ab,key=key),sorted(ba,key=key))])
 with open('gen/Campus.java','w')as f:
 	f.write('''
 	package uwaterloo.enghack.edtalks;

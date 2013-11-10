@@ -15,9 +15,9 @@ names.txt:
 	curl 'http://plantoperations.uwaterloo.ca/floor_plans/' | sed -n 's/.*<a href="\([^"]*\.pdf\)".*/\1/p' | sed -n 's,.*/[0-9][0-9][0-9]\([^_]*\)_.*\([0-9][0-9]*\)FLR\.pdf,\1 \2,p' | uniq > names.txt
 gen/Campus.class: gen gen/Campus.java
 	cd gen && javac Campus.java
-CampusNavigator.class: gen/Campus.class CampusNavigator.java
-	mkdir -p uwaterloo/enghack/edtalks
-	cp gen/Campus.class uwaterloo/enghack/edtalks
-	javac CampusNavigator.java
-	rm -rf uwaterloo
-.PHONY: links pngs clean-unauthorized
+uwaterloo/enghack/edtalks/CampusNavigator.class: gen/Campus.class uwaterloo/enghack/edtalks/CampusNavigator.java
+	cp gen/Campus.* uwaterloo/enghack/edtalks
+	javac uwaterloo/enghack/edtalks/CampusNavigator.java
+test-nav: uwaterloo/enghack/edtalks/CampusNavigator.class
+	java uwaterloo/enghack/edtalks/CampusNavigator
+.PHONY: links pngs clean-unauthorized test-nav
