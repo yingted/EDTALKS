@@ -107,11 +107,6 @@ public final class CampusNavigator{
 			return instruction.toString();
 		}
 	}
-	public static int getFloorNumber(Floor f){
-		if(f.getFloor().equals("B1"))
-			return 0;
-		return Integer.valueOf(f.getFloor());
-	}
 	public static class Building extends ArrayList<Floor>{
 		private static final long serialVersionUID=-4240221880279433922L;
 		protected final String name;
@@ -191,6 +186,7 @@ public final class CampusNavigator{
 				continue;
 			ret.add(new Direction(floor_cache[vertexId.get(pos)],floor_cache[vertexId.get(lastPos)],lastType));
 			lastPos=pos;
+			lastType="direct";
 		}
 		Collections.reverse(ret);
 		return Collections.unmodifiableList(ret);
