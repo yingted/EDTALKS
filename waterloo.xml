@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<waterloo>
+	<building id='2'>
+		<name>Engineering 2</name>
+		<shortname>E2</shortname>
+		<floors>
+			<floor id='1'>Basement</floor>
+			<floor id='2'>1st Floor</floor>
+			<floor id='3'>2nd Floor</floor>
+			<floor id='4'>3rd Floor</floor>
+			<floor id='5'>4th Floor</floor>
+		</floors>
+	</building>
+
+	<building id='3'>
+		<name>Engineering 3</name>
+		<shortname>E3</shortname>
+		<floors>
+			<floor id='1'>1st Floor</floor>
+			<floor id='2'>2nd Floor</floor>
+			<floor id='3'>2nd Mezzanine</floor>
+			<floor id='4'>3rd Floor</floor>
+			<floor id='5'>4th Floor</floor>
+		</floors>
+	</building>
+
+	<path>
+		<type>Indoor</type>
+		<start>
+			<building>1</building>
+			<floor>2</floor>
+		</start>
+		<end>
+			<building>2</building>
+			<floor>2</floor>
+		</end>
+		<distance>5</distance>
+	</path>
+</waterloo>
