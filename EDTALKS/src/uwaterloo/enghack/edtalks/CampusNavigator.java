@@ -15,6 +15,7 @@ public final class CampusNavigator{
 	protected static final Floor[]floor_cache;
 	protected static final ArrayList<ArrayList<Integer>>neighbours=new ArrayList<ArrayList<Integer>>();
 	protected static final ArrayList<ArrayList<Float>>weights=new ArrayList<ArrayList<Float>>();
+	protected static final ArrayList<ArrayList<String>>types=new ArrayList<ArrayList<String>>();
 	protected static final float FLOOR_WEIGHT=50f;
 	static{
 		for(int i=0;i<Campus.shortNames.length;++i)
@@ -27,10 +28,11 @@ public final class CampusNavigator{
 			vertexId.put(str,i);
 			building[i]=str.substring(0,str.indexOf('/'));
 			floor[i]=str.substring(str.indexOf('/')+1);
+			floor_cache[i]=new Floor(i);
 			if(!floor[i].contains(".")){
 				if(!floors.containsKey(building[i]))
 					floors.put(building[i],new ArrayList<Floor>());
-				floors.get(building[i]).add(floor_cache[i]=new Floor(i));
+				floors.get(building[i]).add(floor_cache[i]);
 			}
 		}
 		final List<Building>_buildings=new ArrayList<Building>();
@@ -42,21 +44,26 @@ public final class CampusNavigator{
 		while(neighbours.size()<Campus.vertices.length){
 			neighbours.add(new ArrayList<Integer>());
 			weights.add(new ArrayList<Float>());
+			types.add(new ArrayList<String>());
 		}
 		for(int i=0;i<Campus.a_vertex.length;++i){
 			final int u=vertexId.get(Campus.a_vertex[i]),v=vertexId.get(Campus.b_vertex[i]);
 			neighbours.get(u).add(v);
 			weights.get(u).add(Campus.weight[i]);
+			types.get(u).add(Campus.weight[i]==0?"tunnel":"direct");
 			neighbours.get(v).add(u);
 			weights.get(v).add(Campus.weight[i]);
+			types.get(v).add(Campus.weight[i]==0?"tunnel":"direct");
 		}
 		for(List<Floor>a:floors.values())
 			for(int i=0;i+1<a.size();++i){
 				final int u=a.get(i).id,v=a.get(i+1).id;
 				neighbours.get(u).add(v);
 				weights.get(u).add(FLOOR_WEIGHT);
+				types.get(u).add("upstairs");
 				neighbours.get(v).add(u);
 				weights.get(v).add(FLOOR_WEIGHT);
+				types.get(v).add("downstairs");
 			}
 	}
 	public static class Floor{
@@ -75,6 +82,15 @@ public final class CampusNavigator{
 		}
 		public String toString(){
 			return getShortName()+"/"+getFloor();
+		}
+	}
+	public static class Direction{
+		protected final Floor a,b;
+		protected final String type;//direct,tunnel,upstairs,downstairs
+		protected Direction(Floor _a,Floor _b,String _type){
+			a=_a;
+			b=_b;
+			type=_type;
 		}
 	}
 	public static class Building extends ArrayList<Floor>{
@@ -108,7 +124,8 @@ public final class CampusNavigator{
 			return(d>o.d?1:0)-(d<o.d?1:0);
 		}
 	}
-	public static List<Floor>getPath(Floor start,Floor end){
+	public static List<Direction>getPath(Floor start,Floor end){
+		if(true)return null;
 		final ArrayList<Floor>ret=new ArrayList<Floor>();
 		if(start.id!=end.id){
 			float[]dist=new float[Campus.vertices.length];
@@ -141,13 +158,13 @@ public final class CampusNavigator{
 			}
 			if(Float.isInfinite(dist[end.id]))
 				return null;
-			for(int i=prev[end.id];i!=start.id;i=prev[i]){
-				if(floor_cache[i]!=null)
-					ret.add(floor_cache[i]);
-			}
+			for(int i=end.id;i!=start.id;i=prev[i])
+				ret.add(floor_cache[i]);
+			ret.add(start);
 			Collections.reverse(ret);
 		}
-		return Collections.unmodifiableList(ret);
+		//return Collections.unmodifiableList(ret);
+		return null;
 	}
 	public static void main(String[]args){
 		final List<Building>buildings=getBuildings();

@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import uwaterloo.enghack.edtalks.CampusNavigator.Direction;
 import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import uwaterloo.enghack.edtalks.R;
 import uwaterloo.enghack.edtalks.CampusNavigator.Building;
@@ -74,12 +75,12 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		final OnItemSelectedListener updateListener=new OnItemSelectedListener(){
 			@Override public void onItemSelected(AdapterView<?> viewParent,View view,int pos,long id){
 				Floor from=(Floor)fromFloorSpinner.getSelectedItem(),to=(Floor)toFloorSpinner.getSelectedItem();
-				final List<Floor>path=CampusNavigator.getPath(from,to);
+				final List<Direction>path=CampusNavigator.getPath(from,to);
 				if(path==null){
 					directionsList.setAdapter(new ArrayAdapter<CharSequence>(HomeScreen.this,android.R.layout.simple_list_item_1,new String[]{"sorry!"}));
 					return;
 				}
-				directionsList.setAdapter(new ArrayAdapter<Floor>(HomeScreen.this,android.R.layout.simple_list_item_1,path));
+				directionsList.setAdapter(new ArrayAdapter<Direction>(HomeScreen.this,android.R.layout.simple_list_item_1,path));
 			}
 
 			@Override public void onNothingSelected(AdapterView<?> arg0){}
