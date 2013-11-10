@@ -1,3 +1,6 @@
+gen:
+	mkdir -p gen
+	./make_map.py pdfs
 pdfs:
 	read -p username:\  user && read -sp password:\  pass && mkdir -p pdfs && cd pdfs && curl 'http://plantoperations.uwaterloo.ca/floor_plans/' | sed -n 's/.*<a href="\([^"]*\.pdf\)".*/\1/p' | grep -Fv /restricted/ | xargs -P5 -n1 curl --user "$$user:$$pass" -gLOC -
 pngs: pdfs
