@@ -92,6 +92,9 @@ public final class CampusNavigator{
 			b=_b;
 			type=_type;
 		}
+		@Override public String toString(){
+			return"go "+type+" from "+a+" to "+b;
+		}
 	}
 	public static class Building extends ArrayList<Floor>{
 		private static final long serialVersionUID=-4240221880279433922L;
@@ -125,46 +128,56 @@ public final class CampusNavigator{
 		}
 	}
 	public static List<Direction>getPath(Floor start,Floor end){
-		if(true)return null;
-		final ArrayList<Floor>ret=new ArrayList<Floor>();
-		if(start.id!=end.id){
-			float[]dist=new float[Campus.vertices.length];
-			boolean[]done=new boolean[Campus.vertices.length];
-			int[]prev=new int[Campus.vertices.length];
-			for(int i=0;i<dist.length;++i)
-				dist[i]=Float.POSITIVE_INFINITY;
-			dist[start.id]=0;
-			prev[start.id]=start.id;
-			PriorityQueue<Pair>q=new PriorityQueue<Pair>();
-			q.add(new Pair(0,start.id));
-			while(!q.isEmpty()){
-				final Pair p=q.remove();
-				if(done[p.id])
-					continue;
-				done[p.id]=true;
-				final List<Integer>neigh=neighbours.get(p.id);
-				final List<Float>w=weights.get(p.id);
-				for(int i=0,sz=neigh.size();i<sz;++i){
-					final int u=neigh.get(i);
-					if(!done[u]){
-						float d=p.d+w.get(i);
-						if(d<dist[u]){
-							dist[u]=d;
-							prev[u]=p.id;
-							q.add(new Pair(d,u));
-						}
+		final ArrayList<Direction>ret=new ArrayList<Direction>();
+		float[]dist=new float[Campus.vertices.length];
+		boolean[]done=new boolean[Campus.vertices.length];
+		int[]prev=new int[Campus.vertices.length];
+		String[]type=new String[Campus.vertices.length];
+		for(int i=0;i<dist.length;++i)
+			dist[i]=Float.POSITIVE_INFINITY;
+		dist[start.id]=0;
+		prev[start.id]=start.id;
+		PriorityQueue<Pair>q=new PriorityQueue<Pair>();
+		q.add(new Pair(0,start.id));
+		while(!q.isEmpty()){
+			final Pair p=q.remove();
+			if(done[p.id])
+				continue;
+			done[p.id]=true;
+			final List<Integer>neigh=neighbours.get(p.id);
+			final List<Float>w=weights.get(p.id);
+			final List<String>t=types.get(p.id);
+			for(int i=0,sz=neigh.size();i<sz;++i){
+				final int u=neigh.get(i);
+				if(!done[u]){
+					float d=p.d+w.get(i);
+					if(d<dist[u]){
+						dist[u]=d;
+						prev[u]=p.id;
+						type[u]=t.get(i);
+						q.add(new Pair(d,u));
 					}
 				}
 			}
-			if(Float.isInfinite(dist[end.id]))
-				return null;
-			for(int i=end.id;i!=start.id;i=prev[i])
-				ret.add(floor_cache[i]);
-			ret.add(start);
-			Collections.reverse(ret);
 		}
-		//return Collections.unmodifiableList(ret);
-		return null;
+		if(Float.isInfinite(dist[end.id]))
+			return null;
+		String lastPos=end.toString();
+		String lastType="direct";
+		for(int i=end.id;i!=start.id;i=prev[i]){
+			final int u=prev[i],v=i;
+			String pos=Campus.vertices[u];
+			if(pos.contains("."))
+				pos=pos.substring(0,pos.indexOf('.'));
+			if(type[v]!="direct")
+				lastType=type[v];
+			if(pos.equals(lastPos))
+				continue;
+			ret.add(new Direction(floor_cache[vertexId.get(pos)],floor_cache[vertexId.get(lastPos)],lastType));
+			lastPos=pos;
+		}
+		Collections.reverse(ret);
+		return Collections.unmodifiableList(ret);
 	}
 	public static void main(String[]args){
 		final List<Building>buildings=getBuildings();
