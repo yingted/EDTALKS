@@ -9,11 +9,13 @@ import uwaterloo.enghack.edtalks.CampusNavigator.Building;
 import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -25,6 +27,8 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 	Spinner fromSpinner;
 	Spinner toSpinner;
 	ListView directionsList;
+	Button viewFromButton;
+	Button viewToButton;
 	private int nr_selected=0;
 
 	@Override
@@ -53,6 +57,9 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		fromFloorSpinner = (Spinner) findViewById(R.id.fromFloorSpinner);
 		toFloorSpinner = (Spinner) findViewById(R.id.toFloorSpinner);
 		directionsList = (ListView) findViewById(R.id.directionListView);
+		
+		viewFromButton = (Button) findViewById(R.id.button1);
+		viewToButton = (Button) findViewById (R.id.button2);
 
 		// Set the Spinner Values
 		final ArrayList<Building>items=new ArrayList<Building>(CampusNavigator.getBuildings());
@@ -93,10 +100,33 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 	        @Override
 	        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 	            Object o = directionsList.getItemAtPosition(position);
-	            String str=o.toString().replace("/", "_");//As you are using Default String Adapter
-	            Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
-	        }
+	            String str=o.toString().toLowerCase().replace("/", "_");//As you are using Default String Adapter
+	            Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
+	            intent.putExtra("picName", str);
+	            HomeScreen.this.startActivity(intent);
+	            }
 	    });
+		
+		viewFromButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Object o = fromFloorSpinner.getSelectedItem();
+	            String str=o.toString().toLowerCase().replace("/", "_");
+            	Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
+	            intent.putExtra("picName", str);
+	            HomeScreen.this.startActivity(intent);
+            }
+        });
+		
+		viewToButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Object o = toFloorSpinner.getSelectedItem();
+	            String str=o.toString().toLowerCase().replace("/", "_");
+            	Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
+	            intent.putExtra("picName", str);
+	            HomeScreen.this.startActivity(intent);
+            }
+        });
+
 	}
 
 	@Override
