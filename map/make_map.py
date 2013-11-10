@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from json import load
+from json import load,dumps
 from sys import argv
 from os import listdir
 from collections import namedtuple,defaultdict
@@ -50,6 +50,8 @@ with open('tunnel_lengths.json')as f:
 	tunnel_lengths={sortargs(a.upper(),b.upper()):d for a,b,d in load(f)}
 with open('building_names.json')as f:
 	short_names,long_names=zip(*load(f))
+	short_names=map(str,short_names)
+	long_names=map(str,long_names)
 for a in places.iterkeys():
 	for b in places.iterkeys():
 		for c in joints,tunnels:
@@ -80,20 +82,25 @@ with open('gen/Campus.java','w')as f:
 		public static String[]shortNames=%s;
 		public static String[]longNames=%s;
 	}
-	'''%tuple(str(x).replace("'",'"').replace('[','{').replace(']','}').replace(' ','')for x in(
-		places.keys(),
-		[sorted(places[y].keys(),key=floor_key)for y in places.iterkeys()],
-		[w.name for y in places.itervalues()for z in sorted(y.iteritems(),key=item_key)for w in z[1]],
-		[link.a.bldg for link in links],
-		[link.a.floor for link in links],
-		[link.b.name for link in links],
-		[link.b.bldg for link in links],
-		[link.b.floor for link in links],
-		[link.a.name for link in links],
-		'[%s]'%','.join('%ff'%link.d for link in links),
-		short_names,
-		long_names,
-	)))
+	'''%tuple(
+		[
+			str(x).replace("'",'"').replace('[','{').replace(']','}').replace(' ','')for x in(
+				places.keys(),
+				[sorted(places[y].keys(),key=floor_key)for y in places.iterkeys()],
+				[w.name for y in places.itervalues()for z in sorted(y.iteritems(),key=item_key)for w in z[1]],
+				[link.a.bldg for link in links],
+				[link.a.floor for link in links],
+				[link.b.name for link in links],
+				[link.b.bldg for link in links],
+				[link.b.floor for link in links],
+				[link.a.name for link in links],
+				'[%s]'%','.join('%ff'%link.d for link in links),
+			)
+		]+[
+			'{%s}'%dumps(short_names)[1:-1],
+			'{%s}'%dumps(long_names)[1:-1],
+		]
+	))
 from lxml.builder import E
 flattened_places={bldg:[subfloor.name[len(bldg)+1:]for(floor,subfloors)in sorted(bldg_floors.iteritems(),key=item_key)for subfloor in subfloors]for bldg,bldg_floors in places.iteritems()}
 xml=E.venues(
