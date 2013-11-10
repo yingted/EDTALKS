@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import uwaterloo.enghack.edtalks.R;
+import uwaterloo.enghack.edtalks.CampusNavigator.Building;
 
 public class HomeScreen extends Activity implements OnItemSelectedListener {
 
@@ -57,9 +58,9 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		fromFloorSpinner = (Spinner) findViewById(R.id.fromFloorSpinner);
 		toFloorSpinner = (Spinner) findViewById(R.id.toFloorSpinner);
 		directionsList = (ListView) findViewById(R.id.directionListView);
-if(true)return;
+
 		// Set the Spinner Values
-		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+		ArrayAdapter<Building> adapter = new ArrayAdapter<Building>(this, android.R.layout.simple_spinner_item, CampusNavigator.getBuildings());
 		
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		fromSpinner.setAdapter(adapter);

@@ -79,8 +79,13 @@ public final class CampusNavigator{
 	}
 	public static class Building extends ArrayList<Floor>{
 		private static final long serialVersionUID=-4240221880279433922L;
+		protected final String name;
 		protected Building(String shortName){
 			super(floors.get(shortName));
+			name=longNames.get(shortName);
+		}
+		@Override public String toString(){
+			return name;
 		}
 	}
 	public static List<Building>getBuildings(){
