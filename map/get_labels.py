@@ -2,7 +2,7 @@
 from Tkinter import *
 import Image, ImageTk
 from sys import argv
-from tkSimpleDialog import askstring
+from tkSimpleDialog import askstring,askfloat
 from json import dump,load
 def show(data):
 	lab=Label(root,text=data['name'],font=('Verdana',18),foreground='#0f0')
@@ -25,6 +25,14 @@ def clear(e):
 def showall():
 	for data in out['points']:
 		show(data)
+x=None
+def scale_start(e):
+	global x
+	x=e.x
+def scale_end(e):
+	global y
+	out['dx']=e.x-x
+	out['feet']=askfloat(argv[1],'feet')
 tkimage=None
 def rotate(e,user=True):
 	global tkimage
@@ -54,5 +62,8 @@ showall()
 root.bind("<Return>",add)
 root.bind("<space>",quit)
 root.bind("<Delete>",clear)
+root.bind("<Delete>",clear)
 root.bind("r",rotate)
+root.bind("<Button-1>",scale_start)
+root.bind("<ButtonRelease-1>",scale_end)
 root.mainloop()
