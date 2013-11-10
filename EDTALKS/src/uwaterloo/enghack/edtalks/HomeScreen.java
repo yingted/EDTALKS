@@ -25,6 +25,7 @@ import uwaterloo.enghack.edtalks.R;
 import uwaterloo.enghack.edtalks.CampusNavigator.Building;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.graphics.Color;
 
 
@@ -116,8 +117,8 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 
 	        @Override
 	        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-	            Object o = directionsList.getItemAtPosition(position);
-            	String str=o instanceof Direction?((Direction)o).b.toString().toLowerCase().replace("/", "_"):"sorry!";//As you are using Default String Adapter
+	            String o = directionsList.getItemAtPosition(position).toString();
+            	String str=o.contains(" to ")?o.substring(o.indexOf(" to ")+4).replace(" floor ", "_").toLowerCase():"sorry!";//As you are using Default String Adapter
 	            Intent intent = new Intent (HomeScreen.this, TouchImageViewActivity.class);
 	            intent.putExtra("picName", str);
 	            HomeScreen.this.startActivity(intent);
