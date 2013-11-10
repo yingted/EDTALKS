@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import uwaterloo.enghack.edtalks.CampusNavigator.Building;
+import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -13,9 +16,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
-import uwaterloo.enghack.edtalks.R;
-import uwaterloo.enghack.edtalks.CampusNavigator.Building;
+import android.widget.Toast;
 
 public class HomeScreen extends Activity implements OnItemSelectedListener {
 
@@ -86,6 +87,16 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		};
 		fromFloorSpinner.setOnItemSelectedListener(updateListener);
 		toFloorSpinner.setOnItemSelectedListener(updateListener);
+		
+		directionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+	        @Override
+	        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+	            Object o = directionsList.getItemAtPosition(position);
+	            String str=o.toString().replace("/", "_");//As you are using Default String Adapter
+	            Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
+	        }
+	    });
 	}
 
 	@Override
