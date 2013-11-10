@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<venues>
+	<venue id='1'>
+		<name>University of Waterloo</name>
+
+		<building id='1'>
+		    <name>Douglas Wright Engineering Building</name>
+		    <shortname>DWE</shortname>
+		    <floor id='1'>B</floor>
+			<floor id='2'>1</floor>
+			<floor id='3'>2</floor>
+			<floor id='4'>3</floor>
+		</building>
+		
+		<building id='2'>
+			<name>Engineering 2</name>
+			<shortname>E2</shortname>
+			<floor id='1'>B</floor>
+			<floor id='2'>1</floor>
+			<floor id='3'>2</floor>
+			<floor id='4'>3</floor>
+			<floor id='5'>4</floor>
+		</building>
+
+		<building id='3'>
+			<name>Engineering 3</name>
+			<shortname>E3</shortname>
+			<floor id='1'>1</floor>
+			<floor id='2'>2</floor>
+			<floor id='3'>2.5</floor>
+			<floor id='4'>3</floor>
+			<floor id='5'>4</floor>
+		</building>
+
+		<path>
+			<type>Indoor</type>
+			<place>
+				<building>2</building>
+				<floor>3</floor>
+			</place>
+			<place>
+				<building>3</building>
+				<floor>2</floor>
+			</place>
+			<distance>5</distance>
+		</path>
+		<path>
+		    <type>Indoor</type>
+		    <place>
+		        <building>1</building>
+		        <floor>3</floor>
+		    </place>
+		    <place>
+		        <building>2</building>
+		        <floor>3</floor>
+		    </place>
+		    <distance>5</distance>
+		</path>
+	</venue>
+</venues>
