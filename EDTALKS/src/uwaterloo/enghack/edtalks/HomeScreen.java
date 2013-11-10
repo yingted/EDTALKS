@@ -1,6 +1,8 @@
 package uwaterloo.enghack.edtalks;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
@@ -11,6 +13,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import uwaterloo.enghack.edtalks.CampusNavigator.Floor;
 import uwaterloo.enghack.edtalks.R;
 import uwaterloo.enghack.edtalks.CampusNavigator.Building;
 
@@ -21,32 +24,23 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 	Spinner fromSpinner;
 	Spinner toSpinner;
 	ListView directionsList;
+	private int nr_selected=0;
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		if(true)return;
-		String selected = parent.getItemAtPosition(pos).toString();
-		List<String> SpinnerArray =  new ArrayList<String>();
-		if (selected.equalsIgnoreCase("Select a building") != true) {
-			int floors = 0;//getResources().getIntArray(R.array.building_floors)[pos];
-		}
-		else {
-			SpinnerArray.add ("No building");
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreen.this, android.R.layout.simple_spinner_item, SpinnerArray);
+		Building building = (Building)parent.getItemAtPosition(pos);
+		ArrayAdapter<Floor> adapter = new ArrayAdapter<Floor>(HomeScreen.this, android.R.layout.simple_spinner_item, building);
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		if (parent.getId() == R.id.fromSpinner) {
-			fromFloorSpinner.setAdapter(adapter);
-		} else {
-			toFloorSpinner.setAdapter(adapter);
-		}
+	    final Spinner sp=parent.getId() == R.id.fromSpinner?fromFloorSpinner:toFloorSpinner;
+		sp.setAdapter(adapter);
+		if(nr_selected>1)
+			sp.performClick();
+		else
+			++nr_selected;
 	}
 
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onNothingSelected(AdapterView<?> arg0) {}
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,15 +54,38 @@ public class HomeScreen extends Activity implements OnItemSelectedListener {
 		directionsList = (ListView) findViewById(R.id.directionListView);
 
 		// Set the Spinner Values
-		ArrayAdapter<Building> adapter = new ArrayAdapter<Building>(this, android.R.layout.simple_spinner_item, CampusNavigator.getBuildings());
+		final ArrayList<Building>items=new ArrayList<Building>(CampusNavigator.getBuildings());
+		Collections.sort(items,new Comparator<Building>(){
+			@Override public int compare(Building lhs,Building rhs){
+				return lhs.toString().compareTo(rhs.toString());
+			}
+		});
+		
+		ArrayAdapter<Building> adapter = new ArrayAdapter<Building>(this, android.R.layout.simple_spinner_item, items);
 		
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		fromSpinner.setAdapter(adapter);
-		toSpinner.setAdapter(adapter);
 
 		fromSpinner.setOnItemSelectedListener(this);
 		toSpinner.setOnItemSelectedListener(this);
 
+		fromSpinner.setAdapter(adapter);
+		toSpinner.setAdapter(adapter);
+
+		final OnItemSelectedListener updateListener=new OnItemSelectedListener(){
+			@Override public void onItemSelected(AdapterView<?> viewParent,View view,int pos,long id){
+				Floor from=(Floor)fromFloorSpinner.getSelectedItem(),to=(Floor)toFloorSpinner.getSelectedItem();
+				final List<Floor>path=CampusNavigator.getPath(from,to);
+				if(path==null){
+					directionsList.setAdapter(new ArrayAdapter<CharSequence>(HomeScreen.this,android.R.layout.simple_list_item_1,new String[]{"sorry!"}));
+					return;
+				}
+				directionsList.setAdapter(new ArrayAdapter<Floor>(HomeScreen.this,android.R.layout.simple_list_item_1,path));
+			}
+
+			@Override public void onNothingSelected(AdapterView<?> arg0){}
+		};
+		fromFloorSpinner.setOnItemSelectedListener(updateListener);
+		toFloorSpinner.setOnItemSelectedListener(updateListener);
 	}
 
 	@Override
